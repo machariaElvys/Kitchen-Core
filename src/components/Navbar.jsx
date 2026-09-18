@@ -1,29 +1,57 @@
+import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 
 export default function Navbar() {
-  return (
-    <nav className="navbar">
-      <Link to="/" className="nav-brand">
-        Recipe Hub
-      </Link>
+  const [menuOpen, setMenuOpen] = useState(false);
 
-      <div className="nav-links">
-        <NavLink to="/" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-          Home
-        </NavLink>
+const navClass = ({ isActive }) =>
+    isActive ? "nav-link active" : "nav-link";
 
-        <NavLink to="/recipes" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-          Recipes
-        </NavLink>
+const closeMenu = () => setMenuOpen(false);
 
-        <NavLink to="/favorites" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-          Favorites
-        </NavLink>
+return (
+    <header className="site-header">
+      <nav className="navbar" aria-label="Main navigation">
+        <Link to="/" className="nav-brand" onClick={closeMenu}>
+          <span className="brand-icon" aria-hidden="true">
+            K
+          </span>
 
-        <NavLink to="/about" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-          About
-        </NavLink>
-      </div>
-    </nav>
+<span>
+            Kitchen <strong>Core</strong>
+          </span>
+        </Link>
+
+<button
+          type="button"
+          className="menu-button"
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((current) => !current)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+<div className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <NavLink to="/" end className={navClass} onClick={closeMenu}>
+            Home
+          </NavLink>
+
+<NavLink to="/recipes" className={navClass} onClick={closeMenu}>
+            Recipes
+          </NavLink>
+
+<NavLink to="/favorites" className={navClass} onClick={closeMenu}>
+            Favorites
+          </NavLink>
+
+<NavLink to="/about" className={navClass} onClick={closeMenu}>
+            About
+          </NavLink>
+        </div>
+      </nav>
+    </header>
   );
 }

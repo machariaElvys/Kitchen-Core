@@ -7,36 +7,56 @@ export default function RecipeCard({
   showFavoriteButton = true
 }) {
   return (
-    <div className="card">
-      <div className="recipe-image-wrap">
+    <article className="card">
+      <Link
+        to={`/recipes/${recipe.id}`}
+        className="recipe-image-wrap"
+        aria-label={`View ${recipe.title}`}
+      >
         <img
           src={recipe.image}
           alt={recipe.title}
           className="recipe-image"
+          loading="lazy"
         />
-      </div>
 
-      <div className="card-body">
-        <p className="card-category">{recipe.category}</p>
-        <h3 className="card-title">{recipe.title}</h3>
-        <p className="card-time">{recipe.time}</p>
-        <p className="card-description">{recipe.description}</p>
+<span className="image-category">{recipe.category}</span>
+      </Link>
 
-        <div className="card-actions">
-          <Link to={`/recipes/${recipe.id}`} className="btn">
-            View Recipe
+<div className="card-body">
+        <div className="card-meta">
+          <span>⏱ {recipe.time}</span>
+          <span>★ Popular</span>
+        </div>
+
+<h3 className="card-title">
+          <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
+        </h3>
+
+<p className="card-description">{recipe.description}</p>
+
+<div className="card-actions">
+          <Link to={`/recipes/${recipe.id}`} className="card-recipe-link">
+            View Recipe <span aria-hidden="true">→</span>
           </Link>
 
-          {showFavoriteButton && (
+{showFavoriteButton && (
             <button
-              className="btn btn-outline"
+              type="button"
+              className={`favorite-button ${isFavorite ? "saved" : ""}`}
               onClick={() => onToggleFavorite(recipe.id)}
+              aria-pressed={isFavorite}
+              aria-label={
+                isFavorite
+                  ? `Remove ${recipe.title} from favorites`
+                  : `Add ${recipe.title} to favorites`
+              }
             >
-              {isFavorite ? "Remove" : "Favorite"}
+              <span aria-hidden="true">{isFavorite ? "♥" : "♡"}</span>
             </button>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
