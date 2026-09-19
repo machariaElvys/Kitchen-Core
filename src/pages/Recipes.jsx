@@ -10,6 +10,7 @@ export default function Recipes({
   searchTerm,
   setSearchTerm,
   onSearch,
+  onSelectSuggestion,
   isSearching,
   searchError,
   clearSearch,
@@ -36,6 +37,7 @@ export default function Recipes({
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           onSearch={onSearch}
+            onSelectSuggestion={onSelectSuggestion}
           isSearching={isSearching}
         />
 

@@ -1,187 +1,198 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import { Routes, Route, useNavigate } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+// import Navbar from "./components/Navbar";
+// import Footer from "./components/Footer";
 
-import Home from "./pages/Home";
-import Recipes from "./pages/Recipes";
-import RecipeDetails from "./pages/RecipeDetails";
-import Favorites from "./pages/Favorites";
-import About from "./pages/About";
+// import Home from "./pages/Home";
+// import Recipes from "./pages/Recipes";
+// import RecipeDetails from "./pages/RecipeDetails";
+// import Favorites from "./pages/Favorites";
+// import About from "./pages/About";
 
-import recipesData from "./data/recipes";
+// import recipesData from "./data/recipes";
 
-export default function App() {
-  const navigate = useNavigate();
+// export default function App() {
+//   const navigate = useNavigate();
 
-  const [favorites, setFavorites] = useState(() => {
-    const savedFavorites = localStorage.getItem("recipeHubFavorites");
-    return savedFavorites ? JSON.parse(savedFavorites) : [];
-  });
+//   const [favorites, setFavorites] = useState(() => {
+//     const savedFavorites = localStorage.getItem("recipeHubFavorites");
+//     return savedFavorites ? JSON.parse(savedFavorites) : [];
+//   });
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState("");
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [searchResults, setSearchResults] = useState([]);
+//   const [isSearching, setIsSearching] = useState(false);
+//   const [searchError, setSearchError] = useState("");
 
-  useEffect(() => {
-    localStorage.setItem(
-      "recipeHubFavorites",
-      JSON.stringify(favorites)
-    );
-  }, [favorites]);
+//   useEffect(() => {
+//     localStorage.setItem(
+//       "recipeHubFavorites",
+//       JSON.stringify(favorites)
+//     );
+//   }, [favorites]);
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
-    );
-  };
+//   const toggleFavorite = (id) => {
+//     setFavorites((prev) =>
+//       prev.includes(id)
+//         ? prev.filter((item) => item !== id)
+//         : [...prev, id]
+//     );
+//   };
 
-  const formatInstructions = (instructions) => {
-    if (!instructions) return [];
+//   const formatInstructions = (instructions) => {
+//     if (!instructions) return [];
 
-    return instructions
-      .split(/\r?\n/)
-      .map((step) => step.trim())
-      .filter(Boolean);
-  };
+//     return instructions
+//       .split(/\r?\n/)
+//       .map((step) => step.trim())
+//       .filter(Boolean);
+//   };
 
-  const formatIngredients = (meal) => {
-    const ingredients = [];
+//   const formatIngredients = (meal) => {
+//     const ingredients = [];
 
-    for (let i = 1; i <= 20; i++) {
-      const ingredient = meal[`strIngredient${i}`];
-      const measure = meal[`strMeasure${i}`];
+//     for (let i = 1; i <= 20; i++) {
+//       const ingredient = meal[`strIngredient${i}`];
+//       const measure = meal[`strMeasure${i}`];
 
-      if (ingredient && ingredient.trim()) {
-        ingredients.push(
-          `${measure ? measure.trim() : ""} ${ingredient.trim()}`.trim()
-        );
-      }
-    }
+//       if (ingredient && ingredient.trim()) {
+//         ingredients.push(
+//           `${measure ? measure.trim() : ""} ${ingredient.trim()}`.trim()
+//         );
+//       }
+//     }
 
-    return ingredients;
-  };
+//     return ingredients;
+//   };
 
-  const normalizeMeal = (meal) => {
-    return {
-      id: meal.idMeal,
-      title: meal.strMeal,
-      category: meal.strCategory || "Recipe",
-      time: "See recipe",
-      image: meal.strMealThumb,
-      description:
-        meal.strInstructions?.slice(0, 120) ||
-        "A delicious recipe waiting to be cooked.",
-      ingredients: formatIngredients(meal),
-      steps: formatInstructions(meal.strInstructions),
-    };
-  };
+//   const normalizeMeal = (meal) => {
+//     return {
+//       id: meal.idMeal,
+//       title: meal.strMeal,
+//       category: meal.strCategory || "Recipe",
+//       time: "See recipe",
+//       image: meal.strMealThumb,
+//       description:
+//         meal.strInstructions?.slice(0, 120) ||
+//         "A delicious recipe waiting to be cooked.",
+//       ingredients: formatIngredients(meal),
+//       steps: formatInstructions(meal.strInstructions),
+//     };
+//   };
 
-  const handleSearch = async (query) => {
-    setIsSearching(true);
-    setSearchError("");
+//   const handleSearch = async (query) => {
+//     setIsSearching(true);
+//     setSearchError("");
 
-    try {
-      const response = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
-          query
-        )}`
-      );
+//   const handleSuggestionSelect = (meal) => {
+//   const recipe = normalizeMeal(meal);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch recipes.");
-      }
+//   setSearchResults([recipe]);
+//   setSearchTerm(meal.strMeal);
 
-      const data = await response.json();
+//   navigate(`/recipes/${meal.idMeal}`);
+//     };
+//     try {
+//       const response = await fetch(
+//         `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+//           query
+//         )}`
+//       );
 
-      const meals = data.meals || [];
-      const formattedMeals = meals.map(normalizeMeal);
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch recipes.");
+//       }
 
-      setSearchResults(formattedMeals);
+//       const data = await response.json();
 
-      navigate("/recipes");
-    } catch (error) {
-      console.error(error);
-      setSearchError(
-        "Something went wrong while searching. Please try again."
-      );
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+//       const meals = data.meals || [];
+//       const formattedMeals = meals.map(normalizeMeal);
 
-  const clearSearch = () => {
-    setSearchTerm("");
-    setSearchResults([]);
-    setSearchError("");
-  };
+//       setSearchResults(formattedMeals);
 
-  const allRecipes = [...recipesData, ...searchResults];
+//       navigate("/recipes");
+//     } catch (error) {
+//       console.error(error);
+//       setSearchError(
+//         "Something went wrong while searching. Please try again."
+//       );
+//       setSearchResults([]);
+//     } finally {
+//       setIsSearching(false);
+//     }
+//   };
 
-  return (
-    <>
-      <Navbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        onSearch={handleSearch}
-      />
+//   const clearSearch = () => {
+//     setSearchTerm("");
+//     setSearchResults([]);
+//     setSearchError("");
+//   };
 
-      <main className="container">
-        <Routes>
-          <Route
-            path="/"
-            element={<Home recipes={recipesData} />}
-          />
+//   const allRecipes = [...recipesData, ...searchResults];
 
-                    <Route
-            path="/recipes"
-            element={
-              <Recipes
-                recipes={searchTerm.trim() ? searchResults : recipesData}
-                favorites={favorites}
-                toggleFavorite={toggleFavorite}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                onSearch={handleSearch}
-                isSearching={isSearching}
-                searchError={searchError}
-                clearSearch={clearSearch}
-              />
-            }
-          />
+//   return (
+//     <>
+//       <Navbar
+//         searchTerm={searchTerm}
+//         setSearchTerm={setSearchTerm}
+//         onSearch={handleSearch}
+//       />
 
-          <Route
-            path="/recipes/:id"
-            element={
-              <RecipeDetails
-                recipes={allRecipes}
-                favorites={favorites}
-                toggleFavorite={toggleFavorite}
-              />
-            }
-          />
+//       <main className="container">
+//         <Routes>
+//           <Route
+//             path="/"
+//             element={<Home recipes={recipesData} />}
+//           />
 
-          <Route
-            path="/favorites"
-            element={
-              <Favorites
-                recipes={allRecipes}
-                favorites={favorites}
-                toggleFavorite={toggleFavorite}
-              />
-            }
-          />
+//             <Route
+//             path="/recipes"
+//             element={
+//               <Recipes
+//                 recipes={searchTerm.trim() ? searchResults : recipesData}
+//                 favorites={favorites}
+//                 toggleFavorite={toggleFavorite}
+//                 searchTerm={searchTerm}
+//                 setSearchTerm={setSearchTerm}
+//                 onSearch={handleSearch}
+//                 onSelectSuggestion={handleSuggestionSelect}
+//                 isSearching={isSearching}
+//                 searchError={searchError}
+//                 clearSearch={clearSearch}
+//               />
+//             }
+//           />
 
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </main>
+//           <Route
+//             path="/recipes/:id"
+//             element={
+//               <RecipeDetails
+//                 recipes={allRecipes}
+//                 favorites={favorites}
+//                 toggleFavorite={toggleFavorite}
+//               />
+//             }
+//           />
 
-      <Footer />
-    </>
-  );
-}
+//           <Route
+//             path="/favorites"
+//             element={
+//               <Favorites
+//                 recipes={allRecipes}
+//                 favorites={favorites}
+//                 toggleFavorite={toggleFavorite}
+//               />
+//             }
+//           />
+
+//           <Route path="/about" element={<About />} />
+//         </Routes>
+//       </main>
+
+//       <Footer />
+//     </>
+//   );
+// }
+
+import { useEffect, useState } from "react"; import { Routes, Route, useNavigate } from "react-router-dom"; import Navbar from "./components/Navbar"; import Footer from "./components/Footer"; import Home from "./pages/Home"; import Recipes from "./pages/Recipes"; import RecipeDetails from "./pages/RecipeDetails"; import Favorites from "./pages/Favorites"; import About from "./pages/About"; import recipesData from "./data/recipes"; export default function App() { const navigate = useNavigate(); const [favorites, setFavorites] = useState(() => { const savedFavorites = localStorage.getItem("recipeHubFavorites"); return savedFavorites ? JSON.parse(savedFavorites) : []; }); const [searchTerm, setSearchTerm] = useState(""); const [searchResults, setSearchResults] = useState([]); const [isSearching, setIsSearching] = useState(false); const [searchError, setSearchError] = useState(""); useEffect(() => { localStorage.setItem( "recipeHubFavorites", JSON.stringify(favorites) ); }, [favorites]); const toggleFavorite = (id) => { setFavorites((prev) => prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id] ); }; const formatInstructions = (instructions) => { if (!instructions) return []; return instructions .split(/\r?\n/) .map((step) => step.trim()) .filter(Boolean); }; const formatIngredients = (meal) => { const ingredients = []; for (let i = 1; i <= 20; i++) { const ingredient = meal[`strIngredient${i}`]; const measure = meal[`strMeasure${i}`]; if (ingredient && ingredient.trim()) { ingredients.push( `${measure ? measure.trim() : ""} ${ingredient.trim()}`.trim() ); } } return ingredients; }; const normalizeMeal = (meal) => { return { id: meal.idMeal, title: meal.strMeal, category: meal.strCategory || "Recipe", time: "See recipe", image: meal.strMealThumb, description: meal.strInstructions?.slice(0, 120) || "A delicious recipe waiting to be cooked.", ingredients: formatIngredients(meal), steps: formatInstructions(meal.strInstructions), }; }; const handleSearch = async (query) => { setIsSearching(true); setSearchError(""); try { const response = await fetch( `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent( query )}` ); if (!response.ok) { throw new Error("Failed to fetch recipes."); } const data = await response.json(); const meals = data.meals || []; const formattedMeals = meals.map(normalizeMeal); setSearchResults(formattedMeals); navigate("/recipes"); } catch (error) { console.error(error); setSearchError( "Something went wrong while searching. Please try again." ); setSearchResults([]); } finally { setIsSearching(false); } }; const handleSuggestionSelect = (meal) => { const recipe = normalizeMeal(meal); setSearchResults([recipe]); setSearchTerm(meal.strMeal); navigate(`/recipes/${meal.idMeal}`); }; const clearSearch = () => { setSearchTerm(""); setSearchResults([]); setSearchError(""); }; const allRecipes = [...recipesData, ...searchResults]; return ( <> <Navbar /> <main className="container"> <Routes> <Route path="/" element={<Home recipes={recipesData} />} /> <Route path="/recipes" element={ <Recipes recipes={searchTerm.trim() ? searchResults : recipesData} favorites={favorites} toggleFavorite={toggleFavorite} searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} onSelectSuggestion={handleSuggestionSelect} isSearching={isSearching} searchError={searchError} clearSearch={clearSearch} /> } /> <Route path="/recipes/:id" element={ <RecipeDetails recipes={allRecipes} favorites={favorites} toggleFavorite={toggleFavorite} /> } /> <Route path="/favorites" element={ <Favorites recipes={allRecipes} favorites={favorites} toggleFavorite={toggleFavorite} /> } /> <Route path="/about" element={<About />} /> </Routes> </main> <Footer /> </> ); }
