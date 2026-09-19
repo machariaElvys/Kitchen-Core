@@ -7,11 +7,11 @@ export default function Footer() {
         <div className="footer-brand">
           <Link to="/" className="nav-brand">
             <span className="brand-icon" aria-hidden="true">
-              R
+              K
             </span>
 
 <span>
-              Recipe <strong>Hub</strong>
+              Kitchen<strong>Core</strong>
             </span>
           </Link>
 
@@ -30,7 +30,8 @@ export default function Footer() {
       </div>
 
 <div className="footer-bottom">
-        <p>© 2026 Recipe Hub. Made for people who love good food.</p>
+        <p>© 2026 Kitchen Core. Made for people who love good food. </p>
+        <p>Designed & built by Macharia</p>
       </div>
     </footer>
   );
