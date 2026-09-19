@@ -3,7 +3,9 @@ import { useParams, Link } from "react-router-dom";
 export default function RecipeDetails({ recipes, favorites, toggleFavorite }) {
   const { id } = useParams();
 
-  const recipe = recipes.find((item) => item.id === Number(id));
+  const recipe = recipes.find(
+    (item) => String(item.id) === String(id)
+  );
 
   if (!recipe) {
     return <p className="empty-state">Recipe not found.</p>;

@@ -1243,3 +1243,37 @@ html.dark .nav-link.active {
 
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
 }
+
+.search-result-bar {
+  margin: 0 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 14px 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.search-result-bar strong {
+  color: var(--text);
+}
+
+.search-result-bar .btn {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+  .search-result-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

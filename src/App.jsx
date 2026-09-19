@@ -138,18 +138,16 @@ export default function App() {
             element={<Home recipes={recipesData} />}
           />
 
-          <Route
+                    <Route
             path="/recipes"
             element={
               <Recipes
-                recipes={
-                  searchResults.length > 0
-                    ? searchResults
-                    : recipesData
-                }
+                recipes={searchTerm.trim() ? searchResults : recipesData}
                 favorites={favorites}
                 toggleFavorite={toggleFavorite}
                 searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                onSearch={handleSearch}
                 isSearching={isSearching}
                 searchError={searchError}
                 clearSearch={clearSearch}

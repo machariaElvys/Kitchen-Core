@@ -2,13 +2,16 @@ export default function SearchBar({
   searchTerm,
   setSearchTerm,
   onSearch,
+  isSearching,
 }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!searchTerm.trim()) return;
+    const query = searchTerm.trim();
 
-    onSearch(searchTerm.trim());
+    if (!query || isSearching) return;
+
+    onSearch(query);
   };
 
   return (
@@ -16,14 +19,18 @@ export default function SearchBar({
       <input
         type="text"
         className="search-input"
-        placeholder="Search recipes..."
+        placeholder="Search meals..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* <button type="submit" className="search-button">
-        Search
-      </button> */}
+      <button
+        type="submit"
+        className="btn search-button"
+        disabled={isSearching}
+      >
+        {isSearching ? "Searching..." : "Search"}
+      </button>
     </form>
   );
 }
